@@ -1,0 +1,12 @@
+root = true
+
+[*]
+charset = utf-8
+indent_style = space
+indent_size = 2
+end_of_line = lf   #每一行结束后要通过符号进行换行
+insert_final_newline = true  #在代码结束之后添加空行
+trim_trailing_whitespace = true
+
+
+# 对项目规范性进行一定的设置，比如tab缩进的空格数为2
