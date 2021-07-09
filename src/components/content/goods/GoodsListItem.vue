@@ -1,6 +1,6 @@
 <template>
   <div class="goods-item">
-    <img :src="goodsItem.show.img" alt="" />
+    <img :src="goodsItem.show.img" alt="" @load="imageLoad" />
     <div class="goods-info">
       <p>{{ goodsItem.title }}</p>
       <span class="price">{{ goodsItem.price }}</span>
@@ -18,6 +18,13 @@ export default {
       default() {
         return {};
       }
+    }
+  },
+  methods: {
+    imageLoad() {
+      // console.log("imageLoad");
+      // 事件总线：和Vuex相似，是用来管理事件的
+      this.$bus.$emit("itemImageLoad"); //利用事件总线发射出去一个事件
     }
   }
 };
