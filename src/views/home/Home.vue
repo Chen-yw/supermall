@@ -1,6 +1,13 @@
 <template>
   <div id="home">
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
+    <tab-control
+      :titles="['流行', '精款', '精选']"
+      @tabClick="tabClick"
+      ref="tabControl1"
+      class="tab-control1"
+      v-show="isTabFixed"
+    ></tab-control>
     <Scroll
       class="content"
       ref="scroll"
@@ -11,15 +18,14 @@
     >
       <home-swiper
         :banners="banners"
-        @swiperimageLoad.once="swiperimageLoad"
+        @swiperimageLoad="swiperimageLoad"
       ></home-swiper>
       <recommend-view :recommends="recommends"></recommend-view>
       <feature-view></feature-view>
       <tab-control
         :titles="['流行', '精款', '精选']"
         @tabClick="tabClick"
-        ref="tabControl"
-        :class="{ isfixed: isTabFixed }"
+        ref="tabControl2"
       ></tab-control>
       <goods-list :goods="showGoods"></goods-list>
     </Scroll>
@@ -65,13 +71,23 @@ export default {
       currentType: "pop",
       isShowBackTop: false,
       tabOffsetTop: 0,
-      isTabFixed: false //判断是否吸顶
+      isTabFixed: false, //判断是否吸顶
+      saveY: 0
     };
   },
   computed: {
     showGoods() {
       return this.goods[this.currentType].list;
     }
+  },
+  activated() {
+    // console.log("进入主页");
+    this.$refs.scroll.scrollTo(0, this.saveY, 0);
+    this.$refs.scroll.refresh();
+  },
+  deactivated() {
+    // console.log("转出主页");
+    this.saveY = this.$refs.scroll.getScrollY();
   },
   created() {
     // 1.请求多个数据
@@ -84,16 +100,12 @@ export default {
   },
   mounted() {
     // 3.监听事件总线发射出来的事件，监听图片加载完成（itemImageLoad)
+    const refresh = debounce(this.$refs.scroll.refresh, 50);
     this.$bus.$on("itemImageLoad", () => {
       // console.log("itemImageLoad,图片加载完成。");
       // this.$refs.scroll.refresh();
-      // this.debounce(this.$refs.scroll.refresh, 500);
-      debounce(this.$refs.scroll.refresh, 500);
+      refresh();
     });
-
-    // --为实现navbar吸顶，获取组件元素到顶部的距离
-    // tabOffsetTop 赋值，获取tabControl的offsetTop
-    // this.$refs.tabControl 拿到的是组件，所有的组件都有一个$el属性：用于获取组件中的元素
   },
   methods: {
     /*
@@ -122,6 +134,8 @@ export default {
           this.currentType = "sell";
           break;
       }
+      this.$refs.tabControl1.currentIndex = index;
+      this.$refs.tabControl2.currentIndex = index;
     },
     backTopClick() {
       // console.log("shuju");
@@ -133,14 +147,17 @@ export default {
       // 1.判断BackTop是否显示
       this.isShowBackTop = -position.y > 1000;
       // 2.决定tabControl是否吸顶（position：fixed）
-      this.isTopFixed = -position.y > this.tabOffsetTop;
+      this.isTabFixed = -position.y > this.tabOffsetTop;
     },
     loadMore() {
       // console.log("上拉加载更多");
       this.getHomeGoods(this.currentType);
     },
     swiperimageLoad() {
-      this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop;
+      // --为实现navbar吸顶，获取组件元素到顶部的距离
+      // tabOffsetTop 赋值，获取tabControl的offsetTop
+      // this.$refs.tabControl 拿到的是组件，所有的组件都有一个$el属性：用于获取组件中的元素
+      this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop;
       // console.log(this.$refs.tabControl.$el.offsetTop);
     },
 
@@ -170,7 +187,7 @@ export default {
 </script>
 <style scoped>
 #home {
-  padding-top: 44px;
+  /* padding-top: 44px; */
   height: 100vh;
 
   position: relative;
@@ -180,17 +197,19 @@ export default {
   background-color: var(--color-tint);
   color: white;
 
-  position: fixed;
+  /* 在使用浏览器原生滚动时，为了让导航不跟随滚动 */
+  /* position: fixed;
   left: 0;
   right: 0;
   top: 0;
-  z-index: 9;
+  z-index: 9; */
 }
 
 /* 吸顶 效果 */
-.tab-control {
-  position: sticky;
-  top: 44px;
+.tab-control1 {
+  /* position: sticky; */
+  position: relative;
+  /* top: 44px; */
   z-index: 9;
 }
 
@@ -202,6 +221,7 @@ export default {
 .content {
   /* height: calc(100% - 93px); */
   overflow: hidden;
+  /* background-color: #fff; */
 
   position: absolute;
   top: 44px;
@@ -210,10 +230,11 @@ export default {
   right: 0;
 }
 
-.isfixed {
+/* 添加BSscroll后设置的吸顶无效用，删掉了 */
+/* .isfixed {
   position: fixed;
   left: 0;
   right: 0;
   top: 44px;
-}
+} */
 </style>

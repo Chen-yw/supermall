@@ -99,9 +99,9 @@ export default {
   }
 };
 </script>
-<style>
+<style scoped>
 .wrapper {
-  height: 150px;
+  height: 100vh;
   background-color: red;
 
   /* 原生局部滚动 */

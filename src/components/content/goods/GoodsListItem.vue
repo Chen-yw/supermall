@@ -1,5 +1,5 @@
 <template>
-  <div class="goods-item">
+  <div class="goods-item" @click="itemClick">
     <img :src="goodsItem.show.img" alt="" @load="imageLoad" />
     <div class="goods-info">
       <p>{{ goodsItem.title }}</p>
@@ -25,6 +25,14 @@ export default {
       // console.log("imageLoad");
       // 事件总线：和Vuex相似，是用来管理事件的
       this.$bus.$emit("itemImageLoad"); //利用事件总线发射出去一个事件
+    },
+    itemClick() {
+      this.$router.push("/Detail/" + this.goodsItem.iid);
+      console.log(this.goodsItem.iid);
+      // this.$router.push({
+      //   path: "/detail",
+      //   query: {}
+      // });
     }
   }
 };
