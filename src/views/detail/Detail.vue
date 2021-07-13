@@ -73,6 +73,6 @@ export default {
   height: calc(100% - 44px);
 }
 
-.detail-nav {
-}
+/* .detail-nav {
+} */
 </style>
