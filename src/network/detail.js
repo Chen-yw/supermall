@@ -8,6 +8,12 @@ export function getDetail(iid) {
   });
 }
 
+export function getRecommend() {
+  return request({
+    url: "/recommend"
+  });
+}
+
 /* 由于在服务器拿到的数据不在一个地方，显得数据有点渣乱无章，所以可以将所有的数据保存到
  * 一个对象内，在进行开发的时候，只需要面向一个对象进行开发就可以了。
  */
@@ -33,6 +39,15 @@ export class Shop {
     this.sells = shopInfo.cSells;
     this.score = shopInfo.score;
     this.goodsCount = shopInfo.cGoods;
+  }
+}
+
+export class GoodsParam {
+  constructor(info, rule) {
+    // 注：images可能没有值（某些商品有值，某些没有值）
+    this.image = info.images ? info.images[0] : "";
+    this.infos = info.set;
+    this.sizes = rule.tables;
   }
 }
 

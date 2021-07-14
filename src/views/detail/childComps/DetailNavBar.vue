@@ -45,6 +45,7 @@ export default {
 </script>
 <style scoped>
 .detail-nav-bar {
+  background-color: #fff;
 }
 
 .back img {
