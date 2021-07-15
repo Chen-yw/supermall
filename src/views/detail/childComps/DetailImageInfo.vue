@@ -5,15 +5,25 @@
       <div class="desc">{{ detailInfo.desc }}</div>
       <div class="end"></div>
     </div>
-    <div class="info-key">{{ detailInfo.detailImage[0].key }}</div>
-    <div class="info-list">
-      <img
-        v-for="(item, index) in detailInfo.detailImage[0].list"
-        :key="index"
-        :src="item"
-        @load="imgLoad"
-        alt=""
-      />
+    <div v-for="item in detailInfo.detailImage">
+      <!-- <div class="info-key">{{ detailInfo.detailImage[0].key }}</div> -->
+      <div class="info-key">{{ item.key }}</div>
+      <div class="info-list">
+        <!-- <img
+          v-for="(item, index) in detailInfo.detailImage[0].list"
+          :key="index"
+          :src="item"
+          @load="imgLoad"
+          alt=""
+        /> -->
+        <img
+          v-for="(item, index) in item.list"
+          :key="index"
+          :src="item"
+          @load="imageLoad"
+          alt=""
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -36,11 +46,11 @@ export default {
     };
   },
   methods: {
-    imgLoad() {
-      // 判断所有的图片都加载完了
-      if (++this.counter === this.imagesLength) {
-        this.$emit("imageLoad");
-      }
+    imageLoad() {
+      // 监听是否所有的图片都加载完了
+      // if (++this.counter === this.imagesLength) {
+      this.$emit("detailImageLoad");
+      // }
     }
   },
   watch: {
@@ -55,7 +65,7 @@ export default {
 .goods-info {
   padding: 20px 0;
   border-bottom: 5px solid #f2f5f8;
-  background-color: #fff;
+  /* background-color: #fff; */
 }
 
 .info-list img {

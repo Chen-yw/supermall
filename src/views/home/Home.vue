@@ -45,20 +45,11 @@ import Scroll from "components/common/scroll/Scroll";
 import BackTop from "components/content/backTop/BackTop";
 
 import { getHomeMultidata, getHomeGoods } from "network/home.js";
-import { debounce } from "common/utils";
+// import { debounce } from "common/utils";
+import { itemListenerMixin } from "common/mixin";
 
 export default {
   name: "Home",
-  components: {
-    HomeSwiper,
-    RecommendView,
-    FeatureView,
-    NavBar,
-    TabControl,
-    GoodsList,
-    Scroll,
-    BackTop
-  },
   data() {
     return {
       banners: [],
@@ -72,8 +63,20 @@ export default {
       isShowBackTop: false,
       tabOffsetTop: 0,
       isTabFixed: false, //判断是否吸顶
-      saveY: 0
+      saveY: 0,
+      itemImgListener: null
     };
+  },
+  mixins: [itemListenerMixin],
+  components: {
+    HomeSwiper,
+    RecommendView,
+    FeatureView,
+    NavBar,
+    TabControl,
+    GoodsList,
+    Scroll,
+    BackTop
   },
   computed: {
     showGoods() {
@@ -86,8 +89,12 @@ export default {
     this.$refs.scroll.refresh();
   },
   deactivated() {
+    // 1.保存Y值
     // console.log("转出主页");
     this.saveY = this.$refs.scroll.getScrollY();
+
+    // 2.取消全局事件的监听  传入全局事件，以及对应的监听函数，否则整个项目中的itemImageLoad全局事件都会被取消
+    this.$bus.$off("itemImgLoad", this.itemImgListener);
   },
   created() {
     // 1.请求多个数据
@@ -100,12 +107,7 @@ export default {
   },
   mounted() {
     // 3.监听事件总线发射出来的事件，监听图片加载完成（itemImageLoad)
-    const refresh = debounce(this.$refs.scroll.refresh, 50);
-    this.$bus.$on("itemImageLoad", () => {
-      // console.log("itemImageLoad,图片加载完成。");
-      // this.$refs.scroll.refresh();
-      refresh();
-    });
+    // 此处利用混入（mixin）
   },
   methods: {
     /*

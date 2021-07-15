@@ -27,13 +27,18 @@ export default {
   },
   methods: {
     imageLoad() {
-      // console.log("imageLoad");
-      // 事件总线：和Vuex相似，是用来管理事件的
-      this.$bus.$emit("itemImageLoad"); //利用事件总线发射出去一个事件
+      this.$bus.$emit("itemImgLoad");
+      // if (this.$route.path.indesOf("/home")) {
+      //   // console.log("imageLoad");
+      //   // 事件总线：和Vuex相似，是用来管理事件的
+      //   this.$bus.$emit("homeItemImageLoad"); //利用事件总线发射出去一个事件
+      // } else if (this.$route.path.indesOf("/detail")) {
+      //   this.$bus.$emit("detailItemImageLoad");
+      // }
     },
     itemClick() {
       this.$router.push("/Detail/" + this.goodsItem.iid);
-      console.log(this.goodsItem.iid);
+      // console.log(this.goodsItem.iid);
       // this.$router.push({
       //   path: "/detail",
       //   query: {}

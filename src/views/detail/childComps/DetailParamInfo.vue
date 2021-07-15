@@ -33,7 +33,8 @@ export default {
         return {};
       }
     }
-  }
+  },
+  methods: {}
 };
 </script>
 <style scoped>
