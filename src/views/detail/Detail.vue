@@ -27,7 +27,12 @@
         :goods="recommends"
       />
     </Scroll>
-    <detail-bottom-bar />
+    <detail-bottom-bar @addCart="addToCart" />
+    <back-top
+      class="detailBacktop"
+      @click.native="backTopClick"
+      v-show="isShowBackTop"
+    ></back-top>
   </div>
 </template>
 
@@ -43,8 +48,9 @@ import DetailBottomBar from "./childComps/DetailBottomBar.vue";
 
 import Scroll from "components/common/scroll/Scroll";
 import GoodsList from "components/content/goods/GoodsList";
+// import BackTop from "components/content/backTop/BackTop";
 
-import { itemListenerMixin } from "common/mixin";
+import { itemListenerMixin, backTopMixin } from "common/mixin";
 import { debounce } from "common/utils";
 
 import {
@@ -57,7 +63,7 @@ import {
 
 export default {
   name: "Detail",
-  mixins: [itemListenerMixin],
+  mixins: [itemListenerMixin, backTopMixin],
   data() {
     return {
       iid: null,
@@ -72,6 +78,7 @@ export default {
       themeTopYs: [],
       getThemeTopY: null,
       currentIndex: 0
+      // isShowBackTop: false
     };
   },
   components: {
@@ -85,6 +92,7 @@ export default {
     DetailCommentInfo,
     GoodsList,
     DetailBottomBar
+    // BackTop
   },
   created() {
     // console.log(this.$route.params);
@@ -133,7 +141,7 @@ export default {
 
     // 3.请求推荐数据
     getRecommend().then(res => {
-      console.log(res);
+      // console.log(res);
       this.recommends = res.data.list;
     });
 
@@ -203,6 +211,26 @@ export default {
           this.$refs.detailNav.currentIndex = this.currentIndex;
         }
       }
+
+      // 3.判断BackTop是否显示
+      this.listenShowBackTop(position);
+    },
+    // backTopClick() {
+    //   this.$refs.scroll.scrollTo(0, 0, 500);
+    // }
+    addToCart() {
+      // console.log("------");
+      // 1.获取购物车需要展示的商信息
+      const product = {};
+      product.image = this.topImages[0];
+      product.title = this.goods.title;
+      product.desc = this.goods.desc;
+      product.price = this.goods.realPrice;
+      product.iid = this.iid;
+
+      // 2.将商品信息添加到购物车里
+      // this.$store.commit("addCart", product);
+      this.$store.dispatch("addCart", product);
     }
   }
 };
@@ -234,5 +262,9 @@ export default {
   background-color: #fff;
   /* position: relative;
   z-index: 9; */
+}
+
+.detailBacktop {
+  margin: 0 auto 8px;
 }
 </style>

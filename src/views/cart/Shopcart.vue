@@ -1,13 +1,52 @@
 <template>
-  <div>
-    <h2>购物车</h2>
+  <div class="cart">
+    <!-- 导航 -->
+    <nav-bar class="cart-nav-bar">
+      <!-- <div slot="center">购物车({{ cartLength }})</div> -->
+      <div slot="center">购物车({{ length }})</div>
+    </nav-bar>
+
+    <!-- 商品列表 -->
+    <cart-list class="cart-list" />
+
+    <!-- 底部汇总 -->
   </div>
 </template>
 
 <script>
+import NavBar from "components/common/navbar/NavBar.vue";
+import CartList from "./childComps/CartList.vue";
+
+import { mapGetters } from "vuex";
+
 export default {
-  name: ""
+  name: "Shopcart",
+  components: {
+    NavBar,
+    CartList
+  },
+  computed: {
+    // cartLength() {
+    //   // return this.$store.state.cartList.length;
+    //   return this.$store.getters.cartLength;
+    // }
+    // ...mapGetters(["cartLength", "cartList"]), //将Vuex中grtters中的计算属性，直接转为组件里面的计算属性
+    ...mapGetters({
+      length: "cartLength",
+      list: "cartList"
+    })
+  }
 };
 </script>
-<style></style>
-s
+<style>
+.cart-nav-bar {
+  background-color: var(--color-tint);
+  color: white;
+}
+
+.content {
+  height: calc(100vh - 44px - 49px);
+  overflow: hidden;
+  background-color: #fff;
+}
+</style>

@@ -37,7 +37,7 @@ export default {
       // }
     },
     itemClick() {
-      this.$router.push("/Detail/" + this.goodsItem.iid);
+      this.$router.push("/detail/" + this.goodsItem.iid);
       // console.log(this.goodsItem.iid);
       // this.$router.push({
       //   path: "/detail",

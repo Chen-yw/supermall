@@ -26,7 +26,10 @@
 export default {
   name: "DetailBottomBar",
   methods: {
-    addToCart() {}
+    addToCart() {
+      // console.log("点击监听到购物车");
+      this.$emit("addCart");
+    }
   }
 };
 </script>
@@ -35,7 +38,7 @@ export default {
   height: 58px;
   background-color: #fff;
   position: fixed;
-  /* z-index: 9; */
+  z-index: 9;
   left: 0;
   right: 0;
   bottom: 0;
