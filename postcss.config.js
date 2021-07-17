@@ -1,0 +1,23 @@
+// 转化css 的配置
+module.export = {
+  plugins: {
+    autoprefixer: {},
+    "postcss-px-to-viewport": {
+      viewportWidth: 375, //视窗的宽度，对应的是我们设计稿的宽度(标准的是750，一个点上2个像素)
+      viewportHeight: 667, //视窗的高度，对应的是我们设计稿的高度（可以不配置）
+      unitPrecision: 5, //指定 `px` 转换为视窗单位的小数位数（很多时候无法整除）
+      viewportUnit: "vw", //指定需要转换成的视窗单位，建议使用vw
+      selectorBlackList: ["ignore", "tab-bar", "tab-bar-item"], //指定不需要转化的类型，
+      minPixelValue: 1, //小于或等于`1px`不转换为视窗单位
+      mediaQuery: false, //允许在媒体查询中转换 `px`
+      exclude: [/TabBar/]
+    }
+  }
+};
+
+// 1.在js中使用正则： /正则相关规则/
+// 2.exclude 中存放的元素必须是正则表达式
+// 3.按照排除的文件写对应的正则：
+//  正则规则：
+// ^：表示匹配的内容必须以什么开头（^abc:表示必须以abc开头的
+// $：表示匹配的内容必须以什么为结尾的（abc$ 表示以abc为结尾的）
