@@ -33,6 +33,8 @@
       @click.native="backTopClick"
       v-show="isShowBackTop"
     ></back-top>
+
+    <!-- <toast :message="message" :isShow="isShow" /> -->
   </div>
 </template>
 
@@ -49,6 +51,7 @@ import DetailBottomBar from "./childComps/DetailBottomBar.vue";
 import Scroll from "components/common/scroll/Scroll";
 import GoodsList from "components/content/goods/GoodsList";
 // import BackTop from "components/content/backTop/BackTop";
+// import Toast from "components/common/toast/Toast.vue";
 
 import { itemListenerMixin, backTopMixin } from "common/mixin";
 import { debounce } from "common/utils";
@@ -61,6 +64,7 @@ import {
   getRecommend
 } from "network/detail.js";
 
+import { mapActions } from "vuex";
 export default {
   name: "Detail",
   mixins: [itemListenerMixin, backTopMixin],
@@ -79,6 +83,8 @@ export default {
       getThemeTopY: null,
       currentIndex: 0
       // isShowBackTop: false
+      // message: "",
+      // isShow: false
     };
   },
   components: {
@@ -93,6 +99,7 @@ export default {
     GoodsList,
     DetailBottomBar
     // BackTop
+    // Toast
   },
   created() {
     // console.log(this.$route.params);
@@ -147,13 +154,17 @@ export default {
 
     // 4.给getThemeTopY赋值
     this.getThemeTopY = debounce(() => {
-      this.themeTopYs = [];
-      this.themeTopYs.push(0);
-      this.themeTopYs.push(this.$refs.params.$el.offsetTop - 47);
-      this.themeTopYs.push(this.$refs.comment.$el.offsetTop - 47);
-      this.themeTopYs.push(this.$refs.recommend.$el.offsetTop - 47);
-      this.themeTopYs.push(Number.MAX_VALUE);
-      // console.log(this.themeTopYs);
+      if (this.$refs.param && this.$refs.comment && this.$refs.recommend) {
+        this.$nextTick(() => {
+          this.themeTopYs = [];
+          this.themeTopYs.push(0);
+          this.themeTopYs.push(this.$refs.params.$el.offsetTop - 47);
+          this.themeTopYs.push(this.$refs.comment.$el.offsetTop - 47);
+          this.themeTopYs.push(this.$refs.recommend.$el.offsetTop - 47);
+          this.themeTopYs.push(Number.MAX_VALUE);
+          // console.log(this.themeTopYs);
+        });
+      }
     }, 100);
   },
   mounted() {
@@ -172,6 +183,7 @@ export default {
     this.$bus.$off("itemImgLoad", this.itemImgListener);
   },
   methods: {
+    ...mapActions(["addCart"]),
     // 4.监听详情图片加载完成
     detailImageLoad() {
       // console.log("+++");
@@ -227,10 +239,32 @@ export default {
       product.desc = this.goods.desc;
       product.price = this.goods.realPrice;
       product.iid = this.iid;
+      product.checked = true;
 
       // 2.将商品信息添加到购物车里
       // this.$store.commit("addCart", product);
-      this.$store.dispatch("addCart", product);
+      // this.$store.dispatch("addCart", product).then(res => {
+      //   console.log(res);
+      // });
+
+      /* 将Vuex中actions中的方法映射到相应的组件的methods中 
+        1.从Vuex中导入 import { debounce } from "common/utils";
+        2.在组件methods中映射 
+          ...mapActions(['addCart'])
+          ...mapActions({
+            addToCart: 'addCart'
+          })
+        3.直接使用 this.addCart(product)
+      */
+      this.addCart(product).then(res => {
+        // this.isShow = true;
+        // this.message = res;
+        // setTimeout(() => {
+        //   this.isShow = false;
+        //   this.message = "";
+        // }, 800);
+        this.$toast.show(res, 1000);
+      });
     }
   }
 };
@@ -244,6 +278,7 @@ export default {
 }
 
 .content {
+  overflow: hidden;
   height: calc(100% - 102px);
 }
 

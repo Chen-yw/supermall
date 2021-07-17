@@ -10,12 +10,15 @@
     <cart-list class="cart-list" />
 
     <!-- 底部汇总 -->
+    <cart-bottom-bar />
   </div>
 </template>
 
 <script>
 import NavBar from "components/common/navbar/NavBar.vue";
+
 import CartList from "./childComps/CartList.vue";
+import CartBottomBar from "./childComps/CartBottomBar.vue";
 
 import { mapGetters } from "vuex";
 
@@ -23,7 +26,8 @@ export default {
   name: "Shopcart",
   components: {
     NavBar,
-    CartList
+    CartList,
+    CartBottomBar
   },
   computed: {
     // cartLength() {
@@ -42,11 +46,5 @@ export default {
 .cart-nav-bar {
   background-color: var(--color-tint);
   color: white;
-}
-
-.content {
-  height: calc(100vh - 44px - 49px);
-  overflow: hidden;
-  background-color: #fff;
 }
 </style>
